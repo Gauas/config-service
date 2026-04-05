@@ -18,8 +18,8 @@ type BaseRepo[T any] struct {
 }
 
 func (r *BaseRepo[T]) FindOne(query string, args ...any) (*T, error) {
-	var entity T
-	err := r.db.Where(query, args...).First(&entity).Error
+	entity := new(T)
+	err := r.db.Where(query, args...).First(entity).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, nil
@@ -27,7 +27,7 @@ func (r *BaseRepo[T]) FindOne(query string, args ...any) (*T, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &entity, nil
+	return entity, nil
 }
 
 func (r *BaseRepo[T]) Create(entity *T) error {
@@ -39,6 +39,5 @@ func (r *BaseRepo[T]) Save(entity *T) error {
 }
 
 func (r *BaseRepo[T]) Delete(query string, args ...any) error {
-	var entity T
-	return r.db.Where(query, args...).Delete(&entity).Error
+	return r.db.Where(query, args...).Delete(new(T)).Error
 }
