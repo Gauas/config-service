@@ -1,0 +1,33 @@
+package utils
+
+import (
+	"fmt"
+	"sort"
+	"strings"
+)
+
+func ToEnvFormat(m map[string]any) string {
+	keys := make([]string, 0, len(m))
+	for key := range m {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+
+	var builder strings.Builder
+	for _, key := range keys {
+		fmt.Fprintf(&builder, "%s=%v\n", key, m[key])
+	}
+	return strings.TrimRight(builder.String(), "\n")
+}
+
+func ValidateFlatMap(m map[string]any) error {
+	for key, value := range m {
+		switch value.(type) {
+		case map[string]any:
+			return fmt.Errorf("nested objects not allowed (key: %q)", key)
+		case []any:
+			return fmt.Errorf("arrays not allowed (key: %q)", key)
+		}
+	}
+	return nil
+}
