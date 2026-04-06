@@ -24,7 +24,8 @@ func (r *Router) RegisterRoutes() {
 
 	r.server.GET("/health", healthHandler)
 
-	configGroup := r.server.Group("/config", r.authMiddleware)
+	v1 := r.server.Group("/api/v1")
+	configGroup := v1.Group("/config", r.authMiddleware)
 	configGroup.GET("", handler.get)
 	configGroup.POST("", handler.create)
 	configGroup.PUT("", handler.update)
