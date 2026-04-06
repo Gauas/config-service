@@ -22,9 +22,11 @@ func New(server *echo.Echo, controllerInstance *controller.Controller, authMiddl
 func (r *Router) RegisterRoutes() {
 	handler := newConfigHandler(r.controller)
 
-	r.server.GET("/health", healthHandler)
+	v1 := r.server.Group("/api/v1")
 
-	configGroup := r.server.Group("/config", r.authMiddleware)
+	v1.GET("/config/health", healthHandler)
+
+	configGroup := v1.Group("/config", r.authMiddleware)
 	configGroup.GET("", handler.get)
 	configGroup.POST("", handler.create)
 	configGroup.PUT("", handler.update)
