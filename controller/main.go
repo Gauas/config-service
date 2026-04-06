@@ -3,11 +3,11 @@ package controller
 import "github.com/gauas/config-service/data"
 
 type Controller struct {
-	configRepo data.Repository[data.Config]
+	Repository data.Repositories
 }
 
 func New(dataInstance *data.Data) *Controller {
 	return &Controller{
-		configRepo: dataInstance.NewConfigRepo(),
+		Repository: dataInstance.Repository,
 	}
 }

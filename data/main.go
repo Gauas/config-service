@@ -7,14 +7,22 @@ import (
 	"gorm.io/gorm"
 )
 
+type Repositories struct {
+	Config Repository[Config]
+}
+
 type Data struct {
-	db *gorm.DB
+	db         *gorm.DB
+	Repository Repositories
 }
 
 func New(infraInstance *infra.Infra) *Data {
-	dataInstance := &Data{db: infraInstance.DB}
-	dataInstance.migrate()
-	return dataInstance
+	d := &Data{db: infraInstance.DB}
+	d.Repository = Repositories{
+		Config: d.NewConfigRepo(),
+	}
+	d.migrate()
+	return d
 }
 
 func (d *Data) migrate() {

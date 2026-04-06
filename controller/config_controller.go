@@ -9,7 +9,7 @@ import (
 )
 
 func (ctrl *Controller) Get(serviceName, environment string) (*data.Config, error) {
-	configEntry, err := ctrl.configRepo.FindOne("service = ? AND environment = ?", serviceName, environment)
+	configEntry, err := ctrl.Repository.Config.FindOne("service = ? AND environment = ?", serviceName, environment)
 	if err != nil {
 		return nil, err
 	}
@@ -20,7 +20,7 @@ func (ctrl *Controller) Get(serviceName, environment string) (*data.Config, erro
 }
 
 func (ctrl *Controller) Create(serviceName, environment string, payload data.JSONMap) (*data.Config, error) {
-	existing, err := ctrl.configRepo.FindOne("service = ? AND environment = ?", serviceName, environment)
+	existing, err := ctrl.Repository.Config.FindOne("service = ? AND environment = ?", serviceName, environment)
 	if err != nil {
 		return nil, err
 	}
@@ -35,14 +35,14 @@ func (ctrl *Controller) Create(serviceName, environment string, payload data.JSO
 		Config:      payload,
 	}
 
-	if err := ctrl.configRepo.Create(configEntry); err != nil {
+	if err := ctrl.Repository.Config.Create(configEntry); err != nil {
 		return nil, err
 	}
 	return configEntry, nil
 }
 
 func (ctrl *Controller) Merge(serviceName, environment string, payload data.JSONMap) (*data.Config, error) {
-	configEntry, err := ctrl.configRepo.FindOne("service = ? AND environment = ?", serviceName, environment)
+	configEntry, err := ctrl.Repository.Config.FindOne("service = ? AND environment = ?", serviceName, environment)
 	if err != nil {
 		return nil, err
 	}
@@ -54,19 +54,19 @@ func (ctrl *Controller) Merge(serviceName, environment string, payload data.JSON
 		configEntry.Config[key] = value
 	}
 
-	if err := ctrl.configRepo.Save(configEntry); err != nil {
+	if err := ctrl.Repository.Config.Save(configEntry); err != nil {
 		return nil, err
 	}
 	return configEntry, nil
 }
 
 func (ctrl *Controller) Delete(serviceName, environment string) error {
-	configEntry, err := ctrl.configRepo.FindOne("service = ? AND environment = ?", serviceName, environment)
+	configEntry, err := ctrl.Repository.Config.FindOne("service = ? AND environment = ?", serviceName, environment)
 	if err != nil {
 		return err
 	}
 	if configEntry == nil {
 		return &utils.AppError{Code: http.StatusNotFound, Message: "config not found"}
 	}
-	return ctrl.configRepo.Delete("service = ? AND environment = ?", serviceName, environment)
+	return ctrl.Repository.Config.Delete("service = ? AND environment = ?", serviceName, environment)
 }
