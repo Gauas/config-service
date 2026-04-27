@@ -15,14 +15,14 @@ import (
 type Kernel struct {
 	controller *controller.Controller
 	middleware *middleware.Middleware
-	appConfig  config.AppConfig
+	config     config.Config
 }
 
-func New(controllerInstance *controller.Controller, middlewareInstance *middleware.Middleware, appConfig config.AppConfig) *Kernel {
+func New(controllerInstance *controller.Controller, middlewareInstance *middleware.Middleware, configInstance config.Config) *Kernel {
 	return &Kernel{
 		controller: controllerInstance,
 		middleware: middlewareInstance,
-		appConfig:  appConfig,
+		config:  configInstance,
 	}
 }
 
@@ -32,10 +32,10 @@ func (k *Kernel) Start() {
 
 	k.middleware.RegisterGlobal(server)
 
-	routerInstance := route.New(server, k.controller, k.middleware.Auth())
-	routerInstance.RegisterRoutes()
+	router := route.New(server, k.controller, k.middleware.Auth())
+	router.RegisterRoutes()
 
-	addr := fmt.Sprintf(":%s", k.appConfig.Port)
+	addr := fmt.Sprintf(":%s", k.config.Port)
 	log.Printf("config-service listening on %s", addr)
 
 	if err := server.Start(addr); err != nil && err != http.ErrServerClosed {
