@@ -3,8 +3,6 @@ package utils
 import (
 	"errors"
 	"net/http"
-
-	"github.com/labstack/echo/v4"
 )
 
 type AppError struct {
@@ -14,10 +12,10 @@ type AppError struct {
 
 func (e *AppError) Error() string { return e.Message }
 
-func RespondError(c echo.Context, err error) error {
+func RespondError(c Context, err error) error {
 	var appErr *AppError
 	if errors.As(err, &appErr) {
-		return c.JSON(appErr.Code, echo.Map{"error": appErr.Message})
+		return Error(c, appErr.Code, appErr.Message)
 	}
-	return c.JSON(http.StatusInternalServerError, echo.Map{"error": "internal server error"})
+	return Error(c, http.StatusInternalServerError, "internal server error")
 }

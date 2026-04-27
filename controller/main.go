@@ -1,13 +1,15 @@
 package controller
 
-import "github.com/gauas/config-service/data"
+import (
+	"github.com/gauas/config-service/service"
+)
 
 type Controller struct {
-	Repository data.Repositories
+	service *service.Service
 }
 
-func New(dataInstance *data.Data) *Controller {
+func New(svc *service.Service) *Controller {
 	return &Controller{
-		Repository: dataInstance.Repository,
+		service: svc,
 	}
 }
