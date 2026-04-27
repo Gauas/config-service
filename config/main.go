@@ -1,13 +1,13 @@
 package config
 
-type AppConfig struct {
+type Config struct {
 	Port      string
 	DBUrl     string
 	SecretKey string
 }
 
-func New() AppConfig {
-	appConfig := load()
-	validate(appConfig)
-	return appConfig
+func New() Config {
+	cfg := load()
+	validate(cfg)
+	return cfg
 }

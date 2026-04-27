@@ -10,7 +10,7 @@ type Middleware struct {
 	secretKey string
 }
 
-func New(appConfig config.AppConfig) *Middleware {
+func New(appConfig config.Config) *Middleware {
 	return &Middleware{secretKey: appConfig.SecretKey}
 }
 
