@@ -20,15 +20,17 @@ func New(server *echo.Echo, controllerInstance *controller.Controller, authMiddl
 }
 
 func (r *Router) RegisterRoutes() {
-	handler := newConfigHandler(r.controller)
-
-	v1 := r.server.Group("/api/v1")
+	v1 := r.server.Group("/v1")
 
 	v1.GET("/config/health", healthHandler)
+	r.registry(v1)
+}
 
+func (r *Router) registry(v1 *echo.Group) {
+	c := r.controller
 	configGroup := v1.Group("/config", r.authMiddleware)
-	configGroup.GET("", handler.get)
-	configGroup.POST("", handler.create)
-	configGroup.PUT("", handler.update)
-	configGroup.DELETE("", handler.delete)
+	configGroup.GET("", c.Get)
+	configGroup.POST("", c.Create)
+	configGroup.PUT("", c.Update)
+	configGroup.DELETE("", c.Delete)
 }

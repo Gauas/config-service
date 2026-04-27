@@ -1,16 +1,17 @@
-package data
+package model
 
 import (
 	"database/sql/driver"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
-type JSONMap map[string]any
+type JSONMap map[string]interface{}
 
 type Config struct {
 	ID          uuid.UUID      `gorm:"type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
@@ -22,12 +23,32 @@ type Config struct {
 	DeletedAt   gorm.DeletedAt `gorm:"uniqueIndex:uq_service_env;index"               json:"-"`
 }
 
-type ConfigRepo struct {
-	BaseRepo[Config]
+func (c *Config) Merge(payload JSONMap) error {
+	if err := validatePayload(payload); err != nil {
+		return err
+	}
+	if c.Config == nil {
+		c.Config = JSONMap{}
+	}
+	for key, value := range payload {
+		c.Config[key] = value
+	}
+	return nil
 }
 
-func (d *Data) NewConfigRepo() Repository[Config] {
-	return &ConfigRepo{BaseRepo: BaseRepo[Config]{db: d.db}}
+func validatePayload(payload JSONMap) error {
+	if payload == nil {
+		return fmt.Errorf("config is required")
+	}
+	for key, value := range payload {
+		switch value.(type) {
+		case map[string]interface{}:
+			return fmt.Errorf("nested objects not allowed (key: %q)", key)
+		case []interface{}:
+			return fmt.Errorf("arrays not allowed (key: %q)", key)
+		}
+	}
+	return nil
 }
 
 func (j JSONMap) Value() (driver.Value, error) {
@@ -38,7 +59,7 @@ func (j JSONMap) Value() (driver.Value, error) {
 	return string(bytes), err
 }
 
-func (j *JSONMap) Scan(src any) error {
+func (j *JSONMap) Scan(src interface{}) error {
 	var bytes []byte
 	switch value := src.(type) {
 	case []byte:

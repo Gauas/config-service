@@ -7,21 +7,21 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func load() AppConfig {
+func load() Config {
 	_ = godotenv.Load()
 
-	return AppConfig{
+	return Config{
 		Port:      getEnvOrDefault("PORT", "8080"),
 		DBUrl:     os.Getenv("DB_URL"),
 		SecretKey: os.Getenv("CONFIG_SECRET_KEY"),
 	}
 }
 
-func validate(appConfig AppConfig) {
-	if appConfig.DBUrl == "" {
+func validate(cfg Config) {
+	if cfg.DBUrl == "" {
 		log.Fatal("DB_URL is required")
 	}
-	if appConfig.SecretKey == "" {
+	if cfg.SecretKey == "" {
 		log.Fatal("CONFIG_SECRET_KEY is required")
 	}
 }
