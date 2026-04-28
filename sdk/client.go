@@ -35,7 +35,7 @@ func New(opts Options) *Client {
 
 func (c *Client) Get(service, environment string) (Config, error) {
 	url := fmt.Sprintf(
-		"%s/v1/config?service=%s&env=%s",
+		"%s/v1/config?service=%s&enviroment=%s",
 		c.baseURL,
 		service,
 		environment,
