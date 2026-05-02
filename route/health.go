@@ -1,10 +1,11 @@
 package route
 
 import (
-	"github.com/gauas/config-service/packages/response"
+	"net/http"
+
 	"github.com/labstack/echo/v4"
 )
 
 func healthHandler(c echo.Context) error {
-	return response.OK(c, echo.Map{"health": "ok"})
+	return c.JSON(http.StatusOK, echo.Map{"status": "ok"})
 }
