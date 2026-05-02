@@ -16,10 +16,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Connect Tailscale
-        uses: tailscale/github-action@v2
-        with:
-          authkey: ${{ secrets.TS_AUTHKEY }}
+      - name: Install Tailscale
+        run: curl -fsSL https://tailscale.com/install.sh | sh
+
+      - name: Start Tailscale and authenticate
+        run: |
+          sudo tailscaled &
+          sleep 3
+          sudo tailscale up --authkey ${{ secrets.TS_AUTHKEY }}
+          sleep 5
+
 
       - name: Install go-migrate
         run: |
@@ -30,5 +36,5 @@ jobs:
 
       - name: Run migrations
         env:
-          DATABASE_URL: ${{ secrets.CONFIG_DB_URL }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: migrate -database "$DATABASE_URL" -path migrations up
