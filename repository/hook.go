@@ -66,15 +66,14 @@ func (r Repository[T]) Create(ctx context.Context, entity *T) (*T, error) {
 }
 
 func (r Repository[T]) Exists(ctx context.Context, args ...interface{}) (bool, error) {
-	var tmp T
+	var count int64
 
 	tx := r.db.WithContext(ctx)
 	tx = applyArgs(tx, args...)
 
-	err := tx.Select("1").Limit(1).Find(&tmp).Error
-	if err != nil {
+	if err := tx.Model(new(T)).Count(&count).Error; err != nil {
 		return false, err
 	}
 
-	return tx.RowsAffected > 0, nil
+	return count > 0, nil
 }

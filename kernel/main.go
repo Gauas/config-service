@@ -1,6 +1,7 @@
 package kernel
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -9,6 +10,7 @@ import (
 	"github.com/gauas/config-service/controller"
 	middleware "github.com/gauas/config-service/middlewares"
 	"github.com/gauas/config-service/route"
+	"github.com/gauas/config-service/packages/response"
 	"github.com/labstack/echo/v4"
 )
 
@@ -29,6 +31,20 @@ func New(controllerInstance *controller.Controller, middlewareInstance *middlewa
 func (k *Kernel) Start() {
 	server := echo.New()
 	server.HideBanner = true
+	server.HTTPErrorHandler = func(err error, c echo.Context) {
+		var e *response.Error
+		if errors.As(err, &e) {
+			_ = c.JSON(e.Code, response.Response{Status: e.Code, Error: e.Message})
+			return
+		}
+		var httpErr *echo.HTTPError
+		if errors.As(err, &httpErr) {
+			code := httpErr.Code
+			_ = c.JSON(code, response.Response{Status: code, Error: fmt.Sprintf("%v", httpErr.Message)})
+			return
+		}
+		_ = c.JSON(http.StatusInternalServerError, response.Response{Status: http.StatusInternalServerError, Error: "internal server error"})
+	}
 
 	k.middleware.RegisterGlobal(server)
 
