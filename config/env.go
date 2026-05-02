@@ -13,7 +13,7 @@ func load() Config {
 	return Config{
 		Port:      getEnvOrDefault("PORT", "8080"),
 		DBUrl:     os.Getenv("DB_URL"),
-		SecretKey: os.Getenv("CONFIG_SECRET_KEY"),
+		SecretKey: os.Getenv("SECRET_KEY"),
 	}
 }
 
@@ -22,7 +22,7 @@ func validate(cfg Config) {
 		log.Fatal("DB_URL is required")
 	}
 	if cfg.SecretKey == "" {
-		log.Fatal("CONFIG_SECRET_KEY is required")
+		log.Fatal("SECRET_KEY is required")
 	}
 }
 
