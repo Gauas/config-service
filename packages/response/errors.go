@@ -14,7 +14,7 @@ func NewError(code int, msg string) error {
 }
 
 var (
-	ErrorNotFound     = &Error{Code: http.StatusNotFound, Message: "not found"}
+	ErrorNotFound     = &Error{Code: http.StatusNotFound, Message: "resource not found"}
 	ErrorForbidden    = &Error{Code: http.StatusForbidden, Message: "forbidden"}
 	ErrorUnauthorized = &Error{Code: http.StatusUnauthorized, Message: "unauthorized"}
 )

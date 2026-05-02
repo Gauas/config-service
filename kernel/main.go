@@ -9,8 +9,8 @@ import (
 	"github.com/gauas/config-service/config"
 	"github.com/gauas/config-service/controller"
 	middleware "github.com/gauas/config-service/middlewares"
-	"github.com/gauas/config-service/route"
 	"github.com/gauas/config-service/packages/response"
+	"github.com/gauas/config-service/route"
 	"github.com/labstack/echo/v4"
 )
 
@@ -24,7 +24,7 @@ func New(controllerInstance *controller.Controller, middlewareInstance *middlewa
 	return &Kernel{
 		controller: controllerInstance,
 		middleware: middlewareInstance,
-		config:  configInstance,
+		config:     configInstance,
 	}
 }
 
@@ -48,7 +48,7 @@ func (k *Kernel) Start() {
 
 	k.middleware.RegisterGlobal(server)
 
-	router := route.New(server, k.controller, k.middleware.Auth())
+	router := route.New(server, k.controller, k.middleware.Internal())
 	router.RegisterRoutes()
 
 	addr := fmt.Sprintf(":%s", k.config.Port)

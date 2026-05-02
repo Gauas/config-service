@@ -26,7 +26,6 @@ jobs:
           sudo tailscale up --authkey ${{ secrets.TS_AUTHKEY }}
           sleep 5
 
-
       - name: Install go-migrate
         run: |
           curl -fsSL \

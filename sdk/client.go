@@ -46,7 +46,7 @@ func (c *Client) Get(service, environment string) (Config, error) {
 		return nil, fmt.Errorf("config-sdk: create request: %w", err)
 	}
 
-	req.Header.Set("secret_key", c.secretKey)
+	req.Header.Set("Secret-Key", c.secretKey)
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
