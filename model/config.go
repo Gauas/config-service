@@ -14,7 +14,8 @@ import (
 type JSONMap map[string]interface{}
 
 type Config struct {
-	ID          uuid.UUID      `gorm:"type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
+	ID          int64          `gorm:"type:bigint;primaryKey;autoIncrement"             json:"id"`
+	Key         uuid.UUID      `gorm:"type:uuid;uniqueIndex;not null"                   json:"key"`
 	Service     string         `gorm:"not null;uniqueIndex:uq_service_env"            json:"service"`
 	Environment string         `gorm:"not null;uniqueIndex:uq_service_env"            json:"environment"`
 	Config      JSONMap        `gorm:"type:jsonb;not null"                            json:"config"`

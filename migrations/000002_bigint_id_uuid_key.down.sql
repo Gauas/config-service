@@ -1,0 +1,5 @@
+ALTER TABLE configs DROP CONSTRAINT IF EXISTS configs_key_key;
+ALTER TABLE configs DROP CONSTRAINT IF EXISTS configs_pkey;
+ALTER TABLE configs DROP COLUMN id;
+ALTER TABLE configs RENAME COLUMN key TO id;
+ALTER TABLE configs ADD CONSTRAINT configs_pkey PRIMARY KEY (id);

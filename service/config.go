@@ -20,8 +20,9 @@ func (s *Service) NewConfig(ctx context.Context, req *model.Config) (*model.Conf
 		return nil, response.NewError(http.StatusConflict, "config already exists")
 	}
 
+	key, _ := uuid.NewV7()
 	return s.repository.Config.Create(ctx, &model.Config{
-		ID:          uuid.New(),
+		Key:         key,
 		Service:     req.Service,
 		Environment: req.Environment,
 		Config:      req.Config,
